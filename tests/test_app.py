@@ -17,10 +17,11 @@ client = TestClient(app)
 @pytest.fixture(autouse=True)
 def reset_activities():
     """Reset activities to a known state before each test."""
-    original_participants = {name: list(info["participants"]) for name, info in activities.items()}
+    original_state = {name: {"participants": list(info["participants"])} for name, info in activities.items()}
     yield
     for name, info in activities.items():
-        info["participants"] = original_participants[name]
+        if name in original_state:
+            info["participants"] = original_state[name]["participants"]
 
 
 class TestGetActivities:
